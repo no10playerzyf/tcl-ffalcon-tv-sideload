@@ -8,6 +8,19 @@
 - 绕法：借一个**已经装上**的第三方 App（这里用的是 FongMi 影视 `com.fongmi.android.tv`），让它通过自己的 FileProvider 调起系统安装器。这样走的是正常的“用户手动安装”流程，可以放行。
 - 前提：电视已开 ADB 调试（网络调试 5555），电视上已有 FongMi 影视。
 
+## 一键安装脚本
+
+```bash
+git clone https://github.com/no10playerzyf/tcl-ffalcon-tv-sideload.git
+cd tcl-ffalcon-tv-sideload
+./install.sh <电视IP> app.apk
+# adb 不在 PATH 里的话：ADB=/path/to/adb ./install.sh <电视IP> app.apk
+```
+
+脚本会自动完成这些事：连电视、推送 APK、给 FongMi 文件访问权限、切前台、调起安装器、遥控点“继续”和“安装”、等装完、清理临时文件。macOS 和 Linux 都能用，需要 adb 和 curl。第一次连电视时，要在电视上点“允许 USB 调试”。
+
+已在雷鸟 65S78A 上实测通过（2026-11-16，Jellyfin Android TV 0.20.0）。
+
 ## 为什么 adb 装不上（反编译 `/system/priv-app/PackageInstaller` 得出）
 
 - `com.android.packageinstaller.verifier.VerifierReciver` 注册为安装校验器，交给 `StrategyService` 判断放不放行。策略从 TCL 在线配置 `InstallConfig` 下发。
